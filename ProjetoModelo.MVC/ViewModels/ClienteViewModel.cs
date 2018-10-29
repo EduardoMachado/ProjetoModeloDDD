@@ -32,5 +32,10 @@ namespace ProjetoModelo.MVC.ViewModels
 
         public virtual IEnumerable<ProdutoViewModel> produtos { get; set; }
 
+        public ClienteViewModel()
+        {
+            this.DataCadastro = DateTime.Now;
+        }
+
     }
 }

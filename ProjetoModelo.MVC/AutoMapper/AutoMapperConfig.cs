@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using AutoMapper;
+using ProjetoModeloDDD.Domain.Entities;
+using ProjetoModelo.MVC.ViewModels;
 
 namespace ProjetoModelo.MVC.AutoMapper
 {
     public class AutoMapperConfig
     {
-        //teste
+        public static void RegisterMappings()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<DomainToViewModelMappingProfile>();
+                cfg.AddProfile<ViewModelToDomainMappingProfile>();
+            });
+
+        }
     }
+
+
 }
