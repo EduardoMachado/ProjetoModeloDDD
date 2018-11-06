@@ -1,7 +1,9 @@
 ﻿using ProjetoModeloDDD.Domain.Entities;
 using ProjetoModeloDDD.Infra.EntityConfig;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Linq;
 
 namespace ProjetoModeloDDD.Infra.Context
 {
@@ -36,7 +38,28 @@ namespace ProjetoModeloDDD.Infra.Context
             modelBuilder.Configurations.Add(new ProdutoConfiguration());
 
 
-        }        
+        }
+
+        /// <summary>
+        /// Executa ações no ato do sabe na entidade
+        /// </summary>
+        /// <returns></returns>
+        public override int SaveChanges()
+        {
+            //Sempre que houver uma entidade de nome DataCadastro
+            foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
+            {
+                //Seto a data atual
+                if (entry.State == EntityState.Added)
+                    entry.Property("DataCadastro").CurrentValue = DateTime.Now;
+
+                //Em caso de edição nao seta
+                if (entry.State == EntityState.Modified)
+                    entry.Property("DataCadastro").IsModified = false;
+            }
+
+            return base.SaveChanges();
+        }
 
     }
 

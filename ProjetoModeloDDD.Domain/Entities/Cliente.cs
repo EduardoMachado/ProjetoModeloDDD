@@ -19,10 +19,10 @@ namespace ProjetoModeloDDD.Domain.Entities
 
         public virtual IEnumerable<Produto> produtos { get; set; }
 
-        public Cliente()
-        {
-            this.DataCadastro = DateTime.Now;
-        }
+        //public Cliente()
+        //{
+        //    this.DataCadastro = DateTime.Now;
+        //}
 
         public bool ClienteEspecial(Cliente cliente)
         {
