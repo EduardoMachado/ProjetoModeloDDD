@@ -1,9 +1,12 @@
-﻿using ProjetoModeloDDD.Domain.Interfaces;
+﻿using ProjetoModeloDDD.Domain.Entities;
+using ProjetoModeloDDD.Domain.Interfaces;
 using ProjetoModeloDDD.Infra.Context;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 
 namespace ProjetoModeloDDD.Infra.Repositories
 {
@@ -58,8 +61,8 @@ namespace ProjetoModeloDDD.Infra.Repositories
         {
             var entry = db.Entry<TEntity>(obj);
 
-            //Obtem o id do novo objeto
-            var pkey = _dbSet.Create().GetType().GetProperty("ClienteId").GetValue(obj);
+            //Obtem o id 
+            var pkey = FindPrimaryKey<TEntity>(obj);
 
             //se está desanexando
             if (entry.State == EntityState.Detached)
@@ -85,12 +88,24 @@ namespace ProjetoModeloDDD.Infra.Repositories
                     entry.State = EntityState.Modified;
                 }
             }
-            //db.Entry(obj).State = EntityState.Modified;
+            
             db.SaveChanges();
 
             //Não Funciona
             //db.Entry(obj).State = EntityState.Modified;
             //db.SaveChanges();
+        }
+
+        public int FindPrimaryKey<T>(object item) 
+        {
+            //Pegar o tipo da Classe
+            Type type = item.GetType();
+
+            //Faz o Cast para o tipo da Classe
+            var ClassType = Convert.ChangeType(item, type);
+
+            //Localiza o atributo Key e retorna
+            return (int)type.GetProperties()?.Where(e => e.GetCustomAttributes().Any(ee => ee.GetType() == typeof(KeyAttribute)))?.First().GetValue(ClassType);
         }
     }
 }
